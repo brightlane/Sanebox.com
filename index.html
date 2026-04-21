@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaneBox — Reclaim Your Inbox. Reclaim Your Life.</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0f;
+    --paper: #f5f2ec;
+    --cream: #faf8f4;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --rust: #c94c2a;
+    --sage: #3d5a47;
+    --muted: #7a7670;
+    --border: rgba(201,168,76,0.25);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.6;
+  }
+
+  /* ── TICKER ── */
+  .ticker {
+    background: var(--gold);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    padding: 9px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .ticker-inner {
+    display: inline-block;
+    animation: ticker 28s linear infinite;
+  }
+  .ticker-inner span { padding: 0 3rem; }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ── NAV ── */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.4rem 5vw;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(18px);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--paper); }
+  .nav-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--gold);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    padding: 0.65rem 1.4rem;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 92vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 6rem 5vw;
+    gap: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -10vw;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 55vw;
+    height: 55vw;
+    background: radial-gradient(ellipse, rgba(201,168,76,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.8rem;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--border);
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5.5vw, 5.2rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.6rem;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: rgba(245,242,236,0.72);
+    max-width: 46ch;
+    margin-bottom: 2.4rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: var(--gold);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold-light);
+    transform: translateX(-101%);
+    transition: transform 0.3s ease;
+  }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--paper);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+  .trust-strip {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    margin-top: 2.4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: rgba(245,242,236,0.55);
+    font-family: 'DM Mono', monospace;
+  }
+  .trust-item svg { color: var(--gold); flex-shrink: 0; }
+
+  /* ── INBOX VISUAL ── */
+  .inbox-visual {
+    position: relative;
+  }
+  .inbox-card {
+    background: #13131a;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.08);
+  }
+  .inbox-header {
+    background: #1a1a24;
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .inbox-title {
+    font-size: 0.78rem;
+    font-family: 'DM Mono', monospace;
+    color: rgba(245,242,236,0.5);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .inbox-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    background: var(--rust);
+    color: white;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+  }
+  .email-row {
+    padding: 0.9rem 1.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem;
+    align-items: start;
+    animation: fadeSlide 0.5s ease both;
+    cursor: default;
+    transition: background 0.15s;
+  }
+  .email-row:hover { background: rgba(255,255,255,0.02); }
+  .email-row.saned { opacity: 0.4; }
+  .email-row.saned .email-sender { text-decoration: line-through; }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .email-sender { font-size: 0.82rem; font-weight: 600; color: var(--paper); margin-bottom: 0.15rem; }
+  .email-subject { font-size: 0.76rem; color: rgba(245,242,236,0.45); }
+  .email-time { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: rgba(245,242,236,0.3); }
+  .sane-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    padding: 0.15rem 0.4rem;
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold);
+    border-radius: 2px;
+    margin-top: 0.25rem;
+  }
+  .inbox-after {
+    padding: 1rem 1.2rem;
+    background: rgba(61,90,71,0.15);
+    border-top: 1px solid rgba(61,90,71,0.3);
+    font-size: 0.78rem;
+    color: #7bc47f;
+    font-family: 'DM Mono', monospace;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat-cell {
+    padding: 3rem 5vw;
+    border-right: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4vw, 3.6rem);
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat-label {
+    font-size: 0.82rem;
+    color: rgba(245,242,236,0.5);
+    line-height: 1.5;
+  }
+
+  /* ── HOW IT WORKS ── */
+  section { padding: 7rem 5vw; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+  h2 em { font-style: italic; color: var(--gold); }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 4rem;
+  }
+  .step {
+    background: #0f0f16;
+    padding: 3rem 2.5rem;
+    border: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+  .step:hover { border-color: var(--border); transform: translateY(-4px); }
+  .step-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    color: rgba(201,168,76,0.12);
+    line-height: 1;
+    margin-bottom: 1.2rem;
+    display: block;
+  }
+  .step-icon {
+    font-size: 1.8rem;
+    margin-bottom: 1.2rem;
+    display: block;
+  }
+  .step h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    color: var(--paper);
+  }
+  .step p {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: rgba(245,242,236,0.55);
+  }
+
+  /* ── FEATURES ── */
+  .features-section { background: #0a0a10; }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    margin-top: 4rem;
+    border: 1px solid var(--border);
+  }
+  .feature {
+    padding: 2.5rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .feature:nth-child(2n) { border-right: none; }
+  .feature:nth-child(n+5) { border-bottom: none; }
+  .feature:hover { background: rgba(201,168,76,0.03); }
+  .feature-icon { font-size: 1.6rem; margin-bottom: 1rem; }
+  .feature h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+  }
+  .feature p { font-size: 0.87rem; line-height: 1.65; color: rgba(245,242,236,0.55); }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials-section { background: #080810; }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 4rem;
+  }
+  .testimonial {
+    background: #0f0f1a;
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 2rem;
+    position: relative;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .testimonial:hover { transform: translateY(-4px); border-color: var(--border); }
+  .testimonial::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    color: rgba(201,168,76,0.15);
+    position: absolute;
+    top: -0.5rem;
+    left: 1.2rem;
+    line-height: 1;
+  }
+  .testimonial-text {
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: rgba(245,242,236,0.8);
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .author-avatar {
+    width: 36px; height: 36px;
+    background: var(--gold);
+    color: var(--ink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .author-name { font-size: 0.85rem; font-weight: 600; }
+  .author-title { font-size: 0.75rem; color: rgba(245,242,236,0.4); }
+  .stars { color: var(--gold); font-size: 0.75rem; margin-bottom: 0.8rem; letter-spacing: 0.05em; }
+
+  /* ── PRICING ── */
+  .pricing-section {
+    background: #0a0a0f;
+    text-align: center;
+  }
+  .pricing-intro { max-width: 52ch; margin: 0 auto 3rem; font-size: 1.1rem; color: rgba(245,242,236,0.6); line-height: 1.7; }
+
+  .offer-card {
+    max-width: 540px;
+    margin: 0 auto;
+    background: #0f0f1a;
+    border: 1px solid var(--gold);
+    padding: 3.5rem;
+    position: relative;
+    box-shadow: 0 0 60px rgba(201,168,76,0.08);
+  }
+  .offer-tag {
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 1rem;
+    white-space: nowrap;
+  }
+  .offer-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    margin: 1.5rem 0 0.5rem;
+    color: var(--paper);
+  }
+  .offer-sub {
+    font-size: 0.9rem;
+    color: rgba(245,242,236,0.5);
+    margin-bottom: 2rem;
+  }
+  .offer-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+  .offer-price-note { font-size: 0.78rem; color: rgba(245,242,236,0.4); font-family: 'DM Mono', monospace; margin-bottom: 2rem; }
+
+  .offer-perks {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 2.5rem;
+  }
+  .offer-perks li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.9rem;
+    color: rgba(245,242,236,0.75);
+  }
+  .offer-perks li::before {
+    content: '✓';
+    color: var(--gold);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+  }
+  .credit-badge {
+    display: inline-block;
+    background: rgba(61,90,71,0.3);
+    border: 1px solid rgba(61,90,71,0.6);
+    color: #7bc47f;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.4rem 0.9rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    background: var(--gold);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+    padding: 1.1rem 2.5rem;
+    text-decoration: none;
+    width: 100%;
+    transition: background 0.2s, transform 0.15s;
+    margin-bottom: 0.8rem;
+  }
+  .btn-hero:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .btn-hero-2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--paper);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 1rem 2.5rem;
+    text-decoration: none;
+    width: 100%;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-hero-2:hover { border-color: var(--gold); color: var(--gold); }
+
+  .guarantee {
+    margin-top: 1.5rem;
+    font-size: 0.78rem;
+    color: rgba(245,242,236,0.35);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── FINAL CTA ── */
+  .final-cta {
+    background: var(--gold);
+    color: var(--ink);
+    text-align: center;
+    padding: 7rem 5vw;
+  }
+  .final-cta h2 {
+    color: var(--ink);
+    font-size: clamp(2rem, 4.5vw, 4rem);
+    margin-bottom: 1.2rem;
+  }
+  .final-cta h2 em { font-style: italic; color: rgba(10,10,15,0.6); }
+  .final-cta p {
+    font-size: 1.1rem;
+    color: rgba(10,10,15,0.65);
+    max-width: 50ch;
+    margin: 0 auto 2.5rem;
+    line-height: 1.65;
+  }
+  .btn-dark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--ink);
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.03em;
+    padding: 1.1rem 2.5rem;
+    text-decoration: none;
+    margin: 0 0.5rem 1rem;
+    transition: transform 0.15s, opacity 0.2s;
+  }
+  .btn-dark:hover { transform: translateY(-2px); opacity: 0.9; }
+  .btn-outline-dark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: transparent;
+    border: 2px solid rgba(10,10,15,0.3);
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    margin: 0 0.5rem 1rem;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .btn-outline-dark:hover { border-color: var(--ink); transform: translateY(-2px); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #06060a;
+    padding: 3rem 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--gold);
+    text-decoration: none;
+  }
+  .footer-note { font-size: 0.75rem; color: rgba(245,242,236,0.25); font-family: 'DM Mono', monospace; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding: 4rem 5vw; }
+    .hero::after { display: none; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .stat-cell:nth-child(2) { border-right: none; }
+    .stat-cell:nth-child(3) { border-right: 1px solid var(--border); }
+    .steps-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .feature { border-right: none !important; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    h1 { font-size: 2.4rem; }
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.7s ease forwards;
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  [data-delay="1"] { animation-delay: 0.1s; }
+  [data-delay="2"] { animation-delay: 0.2s; }
+  [data-delay="3"] { animation-delay: 0.35s; }
+  [data-delay="4"] { animation-delay: 0.5s; }
+  [data-delay="5"] { animation-delay: 0.65s; }
+
+  .section-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .section-animate.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>✦ 93% less inbox chaos in week one</span>
+    <span>✦ Used by 500,000+ professionals worldwide</span>
+    <span>✦ Works with Gmail, Outlook, Apple Mail & more</span>
+    <span>✦ No spam, no ads, no data selling — ever</span>
+    <span>✦ Average user saves 2.5 hours per week</span>
+    <span>✦ $15 credit with this exclusive link</span>
+    <span>✦ 93% less inbox chaos in week one</span>
+    <span>✦ Used by 500,000+ professionals worldwide</span>
+    <span>✦ Works with Gmail, Outlook, Apple Mail & more</span>
+    <span>✦ No spam, no ads, no data selling — ever</span>
+    <span>✦ Average user saves 2.5 hours per week</span>
+    <span>✦ $15 credit with this exclusive link</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="https://try.sanebox.com/benitopalmarini" class="nav-logo">Sane<span>Box</span></a>
+  <a href="https://try.sanebox.com/benitopalmarini" class="nav-cta">Try Free + Get $15 →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow fade-in" data-delay="1">Your inbox is broken. This fixes it.</div>
+    <h1 class="fade-in" data-delay="2">Stop drowning.<br><em>Start thriving.</em></h1>
+    <p class="hero-sub fade-in" data-delay="3">SaneBox uses AI to learn what matters to you — silently sorting, snoozing, and summarizing your email so your inbox only shows what actually needs your attention.</p>
+    <div class="hero-actions fade-in" data-delay="4">
+      <a href="https://try.sanebox.com/benitopalmarini" class="btn-primary">
+        <span>Start Free Trial + $15 Credit</span>
+        <span>→</span>
+      </a>
+      <a href="https://try.sanebox.com/efdrajzfvk2c" class="btn-secondary">
+        See how it works ↓
+      </a>
+    </div>
+    <div class="trust-strip fade-in" data-delay="5">
+      <div class="trust-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        No credit card required
+      </div>
+      <div class="trust-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        Setup in 2 minutes
+      </div>
+      <div class="trust-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+        Cancel anytime
+      </div>
+    </div>
+  </div>
+
+  <!-- INBOX MOCK -->
+  <div class="inbox-visual fade-in" data-delay="3">
+    <div class="inbox-card">
+      <div class="inbox-header">
+        <span class="inbox-title">📬 Your Inbox — Before SaneBox</span>
+        <span class="inbox-count">47 unread</span>
+      </div>
+      <div class="email-row" style="animation-delay:0.1s">
+        <div>
+          <div class="email-sender">LinkedIn Notifications</div>
+          <div class="email-subject">John viewed your profile and 14 others</div>
+          <div class="sane-badge">→ SaneLater</div>
+        </div>
+        <div class="email-time">9:14am</div>
+      </div>
+      <div class="email-row" style="animation-delay:0.2s">
+        <div>
+          <div class="email-sender">Shopify Digest</div>
+          <div class="email-subject">Your weekly store summary</div>
+          <div class="sane-badge">→ SaneNews</div>
+        </div>
+        <div class="email-time">8:52am</div>
+      </div>
+      <div class="email-row" style="animation-delay:0.3s">
+        <div>
+          <div class="email-sender">⭐ Sarah Chen</div>
+          <div class="email-subject">Re: Q3 proposal — looks great, one question</div>
+        </div>
+        <div class="email-time">8:31am</div>
+      </div>
+      <div class="email-row" style="animation-delay:0.4s">
+        <div>
+          <div class="email-sender">Canva Team</div>
+          <div class="email-subject">New template: Pitch Decks for 2025</div>
+          <div class="sane-badge">→ SaneLater</div>
+        </div>
+        <div class="email-time">7:59am</div>
+      </div>
+      <div class="email-row" style="animation-delay:0.5s">
+        <div>
+          <div class="email-sender">⭐ Marcus (Your Boss)</div>
+          <div class="email-subject">Can we push the call to 3pm?</div>
+        </div>
+        <div class="email-time">7:44am</div>
+      </div>
+      <div class="email-row" style="animation-delay:0.6s">
+        <div>
+          <div class="email-sender">Notion Newsletter</div>
+          <div class="email-subject">10 templates to supercharge your workflow</div>
+          <div class="sane-badge">→ SaneNews</div>
+        </div>
+        <div class="email-time">7:02am</div>
+      </div>
+      <div class="inbox-after">
+        ✓ Only 2 emails need your attention today
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-row section-animate">
+  <div class="stat-cell">
+    <div class="stat-number">500K+</div>
+    <div class="stat-label">Professionals who've reclaimed their inbox</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-number">2.5hrs</div>
+    <div class="stat-label">Average time saved per user per week</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-number">93%</div>
+    <div class="stat-label">Users report less inbox anxiety after week 1</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-number">15+</div>
+    <div class="stat-label">Email platforms supported, including Gmail & Outlook</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section-animate">
+  <div class="section-label">How it works</div>
+  <h2>Smart AI. <em>Real results.</em><br>No learning curve.</h2>
+  <div class="steps-grid">
+    <div class="step">
+      <span class="step-number">01</span>
+      <span class="step-icon">🔗</span>
+      <h3>Connect in 2 Minutes</h3>
+      <p>Link your email account — Gmail, Outlook, Apple Mail, Yahoo, and 15+ others. No installs, no plugins. SaneBox works from the cloud.</p>
+    </div>
+    <div class="step">
+      <span class="step-number">02</span>
+      <span class="step-icon">🧠</span>
+      <h3>AI Learns What Matters</h3>
+      <p>SaneBox analyzes your email history to understand what you actually read and respond to. The more you use it, the smarter it gets.</p>
+    </div>
+    <div class="step">
+      <span class="step-number">03</span>
+      <span class="step-icon">✨</span>
+      <h3>Inbox Clarity, Every Day</h3>
+      <p>Important emails land in your inbox. The rest go to smart folders. You see a daily digest. You stay in control — but the noise is gone.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section section-animate">
+  <div class="section-label">What you get</div>
+  <h2>Every tool you need to<br><em>own your inbox.</em></h2>
+  <div class="features-grid">
+    <div class="feature">
+      <div class="feature-icon">📁</div>
+      <h4>SaneLater & Smart Folders</h4>
+      <p>Non-urgent emails are automatically moved to a SaneLater folder, delivered as a digest at a time you choose. Stay focused, stay informed.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⏰</div>
+      <h4>Snooze & Reminders</h4>
+      <p>Send an email to snooze@sanebox.com and it vanishes until you need it. Never lose track of a follow-up again.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🚫</div>
+      <h4>SaneBlackHole</h4>
+      <p>Drag any sender to your SaneBlackHole folder — they'll never reach your inbox again. It's the unsubscribe button that actually works.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📊</div>
+      <h4>Email Analytics</h4>
+      <p>See exactly where your inbox time goes. Which senders cost you the most? What's safe to ignore? Data-driven clarity.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔗</div>
+      <h4>Works Everywhere</h4>
+      <p>SaneBox works with ANY email client on ANY device — phone, desktop, web. No app to install, no extension needed.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔒</div>
+      <h4>Private & Secure</h4>
+      <p>SaneBox never reads the content of your emails. It only analyzes metadata — sender, subject, timestamp — to make smart decisions.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section section-animate">
+  <div class="section-label">Real people. Real results.</div>
+  <h2>They got their <em>time back.</em><br>You can too.</h2>
+  <div class="testimonials-grid">
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">I used to spend 2 hours a day on email. Now it's 30 minutes. SaneBox is the single best productivity investment I've made in a decade of working remotely.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">KM</div>
+        <div>
+          <div class="author-name">Kristen M.</div>
+          <div class="author-title">Marketing Director</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">I was incredibly skeptical. "Another email app?" But SaneBox is different — it lives inside your existing email. Day 3, I was a convert. Month 2, I'm evangelical about it.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">DL</div>
+        <div>
+          <div class="author-name">David L.</div>
+          <div class="author-title">Startup Founder</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">The SaneBlackHole alone is worth the price. I've eliminated 60+ newsletters and promotional lists in one week. My inbox is finally a place I actually want to open.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">PR</div>
+        <div>
+          <div class="author-name">Priya R.</div>
+          <div class="author-title">Product Manager, Series B</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING / OFFER -->
+<section class="pricing-section section-animate">
+  <div class="section-label">Exclusive offer</div>
+  <h2>Start free. <em>Stay sane.</em></h2>
+  <p class="pricing-intro">Every plan includes a 14-day free trial. Use this link and you'll get a $15 credit applied to your first payment — automatically.</p>
+
+  <div class="offer-card">
+    <div class="offer-tag">⭐ Exclusive $15 Credit — This Link Only</div>
+    <div class="offer-headline">Start Your Free Trial</div>
+    <div class="offer-sub">14 days free. Cancel anytime. No credit card required to start.</div>
+
+    <div class="credit-badge">💰 $15 ACCOUNT CREDIT INCLUDED</div>
+
+    <ul class="offer-perks">
+      <li>Smart folder sorting (SaneLater, SaneNews, SaneBlackHole)</li>
+      <li>Email snooze & reminders</li>
+      <li>Works with any email client on any device</li>
+      <li>Daily digest — catch up in 5 minutes</li>
+      <li>Privacy-first: content never read or stored</li>
+      <li>14-day free trial, then plans from ~$7/mo</li>
+    </ul>
+
+    <a href="https://try.sanebox.com/benitopalmarini" class="btn-hero">
+      <span>Claim Your $15 Credit & Start Free</span>
+      <span>→</span>
+    </a>
+    <a href="https://try.sanebox.com/efdrajzfvk2c" class="btn-hero-2">
+      Start trial without credit
+    </a>
+
+    <div class="guarantee">✦ 14-DAY TRIAL · NO CARD REQUIRED · CANCEL ANYTIME</div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta section-animate">
+  <h2>Your inbox is costing you<br><em>more than you think.</em></h2>
+  <p>The average professional spends 2.5+ hours per day on email. Most of it unnecessary. SaneBox gives that time back to you — starting today.</p>
+  <div>
+    <a href="https://try.sanebox.com/benitopalmarini" class="btn-dark">Get $15 Off + Start Free →</a>
+    <a href="https://try.sanebox.com/efdrajzfvk2c" class="btn-outline-dark">Just start free trial</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="https://try.sanebox.com/benitopalmarini" class="footer-logo">SaneBox</a>
+  <span class="footer-note">Affiliate links. SaneBox is an independent product by Sane Software Inc.</span>
+</footer>
+
+<script>
+  // Scroll-triggered animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.section-animate').forEach(el => observer.observe(el));
+
+  // Animated inbox demo
+  const rows = document.querySelectorAll('.email-row');
+  let i = 0;
+  function animateRows() {
+    if (i < rows.length) {
+      rows[i].style.animationPlayState = 'running';
+      i++;
+      setTimeout(animateRows, 220);
+    }
+  }
+  setTimeout(animateRows, 1200);
+</script>
+</body>
+</html>

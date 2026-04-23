@@ -1,8 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+const fs = require("fs");
+const path = require("path");
 
-  <url>
-    <loc>https://brightlane.github.io/Sanebox.com/</loc>
-  </url>
+const base = "https://brightlane.github.io/Sanebox.com/";
 
-</urlset>
+const dir = path.join(__dirname, "../public/pages");
+const files = fs.readdirSync(dir);
+
+let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+
+files.forEach(file => {
+  xml += `
+<url>
+  <loc>${base}pages/${file}</loc>
+</url>`;
+});
+
+xml += `</urlset>`;
+
+fs.writeFileSync(path.join(__dirname, "../public/sitemap.xml"), xml);
+
+console.log("✅ sitemap updated");

@@ -1,6 +1,0 @@
-mkdir -p public && node -e "
-const fs=require('fs');
-const k=['email','inbox','spam','clutter','gmail','outlook','newsletter','unsubscribe','zero inbox','email filter','priority inbox','email management'];
-let s='<?xml version=\"1.0\" encoding=\"UTF-8\"?><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc>https://brightlane.github.io/Sanebox.com/</loc><priority>1.0</priority></url>';
-for(let i=0;i<50000;i++)s+='<url><loc>https://brightlane.github.io/Sanebox.com/sanebox-'+i.toString().padStart(5,'0')+'-'+k[i%k.length]+'.html</loc><priority>0.8</priority></url>';
-s+='</urlset>';fs.writeFileSync('public/sitemap.xml',s);console.log('✅ 50K URLs!');"

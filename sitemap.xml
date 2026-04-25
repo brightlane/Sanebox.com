@@ -1,23 +1,93 @@
-const fs = require("fs");
-const path = require("path");
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-const base = "https://brightlane.github.io/Sanebox.com/";
+  <!-- CORE PAGES -->
+  <url>
+    <loc>https://brightlane.github.io/Sanebox.com/</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
 
-const dir = path.join(__dirname, "../public/pages");
-const files = fs.readdirSync(dir);
+  <url>
+    <loc>https://brightlane.github.io/Sanebox.com/index.html</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
 
-let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+  <url>
+    <loc>https://brightlane.github.io/Sanebox.com/home.html</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
-files.forEach(file => {
-  xml += `
-<url>
-  <loc>${base}pages/${file}</loc>
-</url>`;
-});
+  <!-- HUB PAGES -->
+  <url>
+    <loc>https://brightlane.github.io/Sanebox.com/coffee-hub.html</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
-xml += `</urlset>`;
+  <url>
+    <loc>https://brightlane.github.io/Sanebox.com/vacuum-hub.html</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
-fs.writeFileSync(path.join(__dirname, "../public/sitemap.xml"), xml);
+  <url>
+    <loc>https://brightlane.github.io/Sanebox.com/ring_light-hub.html</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
 
-console.log("✅ sitemap updated");
+  <!-- CATEGORY / SEO SILOS -->
+  <url>
+    <loc>https://brightlane.github.io/Sanebox.com/categories.html</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://brightlane.github.io/Sanebox.com/comparisons.html</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- SURVIVAL / TECH HUBS -->
+  <url>
+    <loc>https://brightlane.github.io/Sanebox.com/survival-kit.html</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://brightlane.github.io/Sanebox.com/portable-power-banks.html</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- LEGAL / SYSTEM -->
+  <url>
+    <loc>https://brightlane.github.io/Sanebox.com/privacy.html</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://brightlane.github.io/Sanebox.com/terms.html</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+</urlset>

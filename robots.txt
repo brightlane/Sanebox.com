@@ -1,0 +1,61 @@
+# =========================
+# Brightlane SEO System
+# robots.txt (Production)
+# =========================
+
+User-agent: *
+Allow: /
+
+# =========================
+# BLOCK INTERNAL SYSTEM FILES
+# =========================
+
+Disallow: /node_modules/
+Disallow: /scripts/
+Disallow: /.github/
+Disallow: /cache/
+Disallow: /core/
+Disallow: /generator/
+Disallow: /generator/
+Disallow: /logs/
+Disallow: /dist-temp/
+Disallow: /.env
+Disallow: /package-lock.json
+Disallow: /package.json
+
+# =========================
+# BLOCK BUILD / ENGINE FILES
+# (prevents indexing of logic layer)
+# =========================
+
+Disallow: /keyword-*.js
+Disallow: /seo-*.js
+Disallow: /affiliate-*.js
+Disallow: /auto-*.js
+Disallow: /master-*.js
+Disallow: /engine*.js
+Disallow: /runner*.js
+Disallow: /orchestrator*.js
+Disallow: /pipeline*.js
+
+# =========================
+# ALLOW PUBLIC SEO PAGES
+# =========================
+
+Allow: /*.html
+Allow: /
+
+# =========================
+# BLOCK TEMP / DEBUG FILES
+# =========================
+
+Disallow: /*debug*
+Disallow: /*test*
+Disallow: /*tmp*
+Disallow: /*.log
+
+# =========================
+# SITEMAP
+# =========================
+
+Sitemap: https://brightlane.github.io/Sanebox.com/sitemap.xml

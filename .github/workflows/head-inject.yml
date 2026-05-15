@@ -1,82 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0"
-  xmlns:atom="http://www.w3.org/2005/Atom"
-  xmlns:content="http://purl.org/rss/1.0/modules/content/"
-  xmlns:media="http://search.yahoo.com/mrss/">
-  <channel>
-    <title>BrightLane — SaneBox Email Productivity</title>
-    <link>https://brightlane.github.io/Sanebox.com/</link>
-    <description>AI email productivity reviews, inbox zero guides, and SaneBox tips updated weekly.</description>
-    <language>en-US</language>
-    <copyright>© 2026 BrightLane</copyright>
-    <managingEditor>editorial@brightlane.com (BrightLane Editorial)</managingEditor>
-    <webMaster>editorial@brightlane.com (BrightLane Editorial)</webMaster>
-    <pubDate>Thu, 15 May 2026 00:00:00 GMT</pubDate>
-    <lastBuildDate>Thu, 15 May 2026 00:00:00 GMT</lastBuildDate>
-    <ttl>1440</ttl>
-    <image>
-      <url>https://brightlane.github.io/Sanebox.com/assets/logo.png</url>
-      <title>BrightLane SaneBox</title>
-      <link>https://brightlane.github.io/Sanebox.com/</link>
-      <width>144</width>
-      <height>144</height>
-    </image>
-    <atom:link href="https://brightlane.github.io/Sanebox.com/feed.xml" rel="self" type="application/rss+xml"/>
+name: Update RSS Feed
 
-    <item>
-      <title>SaneBox Review 2026: AI Email Organizer That Saves Hours Every Week</title>
-      <link>https://brightlane.github.io/Sanebox.com/sanebox-review.html</link>
-      <guid isPermaLink="true">https://brightlane.github.io/Sanebox.com/sanebox-review.html</guid>
-      <pubDate>Wed, 01 Jan 2026 00:00:00 GMT</pubDate>
-      <description>Full SaneBox review — features, pricing, pros, cons, and real results. Cut inbox clutter by 50%. Free 14-day trial + $15 credit.</description>
-      <category>Email Productivity</category>
-      <category>SaneBox</category>
-      <media:content url="https://brightlane.github.io/Sanebox.com/assets/sanebox-cover.jpg" medium="image" width="1200" height="630"/>
-    </item>
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '**.html'
+      - 'feed.xml'
 
-    <item>
-      <title>How to Clean Your Email Inbox Fast in 2026 (Step-by-Step)</title>
-      <link>https://brightlane.github.io/Sanebox.com/clean-email-inbox.html</link>
-      <guid isPermaLink="true">https://brightlane.github.io/Sanebox.com/clean-email-inbox.html</guid>
-      <pubDate>Thu, 15 May 2026 00:00:00 GMT</pubDate>
-      <description>Complete step-by-step guide to inbox zero. Clean thousands of emails fast using AI tools like SaneBox.</description>
-      <category>Email Productivity</category>
-      <category>Inbox Zero</category>
-      <media:content url="https://brightlane.github.io/Sanebox.com/assets/sanebox-cover.jpg" medium="image" width="1200" height="630"/>
-    </item>
+jobs:
+  update-feed:
+    runs-on: ubuntu-latest
 
-    <item>
-      <title>SaneBox vs Clean Email vs Unroll.me vs Hey — Which Wins in 2026?</title>
-      <link>https://brightlane.github.io/Sanebox.com/sanebox-vs.html</link>
-      <guid isPermaLink="true">https://brightlane.github.io/Sanebox.com/sanebox-vs.html</guid>
-      <pubDate>Thu, 15 May 2026 00:00:00 GMT</pubDate>
-      <description>Head-to-head comparison of the best AI email organizers. Features, pricing, privacy, and which one saves the most time.</description>
-      <category>Email Productivity</category>
-      <category>Comparison</category>
-      <media:content url="https://brightlane.github.io/Sanebox.com/assets/sanebox-cover.jpg" medium="image" width="1200" height="630"/>
-    </item>
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-    <item>
-      <title>SaneBox Pricing 2026: Which Plan Is Right for You?</title>
-      <link>https://brightlane.github.io/Sanebox.com/sanebox-pricing.html</link>
-      <guid isPermaLink="true">https://brightlane.github.io/Sanebox.com/sanebox-pricing.html</guid>
-      <pubDate>Thu, 15 May 2026 00:00:00 GMT</pubDate>
-      <description>SaneBox pricing breakdown for 2026. Snack, Lunch, and Dinner plans compared. Which plan saves you the most money?</description>
-      <category>Email Productivity</category>
-      <category>SaneBox Pricing</category>
-      <media:content url="https://brightlane.github.io/Sanebox.com/assets/sanebox-cover.jpg" medium="image" width="1200" height="630"/>
-    </item>
+      - name: Update feed lastBuildDate
+        run: |
+          DATE=$(date -u "+%a, %d %b %Y %H:%M:%S GMT")
+          sed -i "s|<lastBuildDate>.*</lastBuildDate>|<lastBuildDate>${DATE}</lastBuildDate>|" feed.xml
+          echo "Updated lastBuildDate to: $DATE"
 
-    <item>
-      <title>How to Reach Inbox Zero and Stay There in 2026</title>
-      <link>https://brightlane.github.io/Sanebox.com/inbox-zero-guide.html</link>
-      <guid isPermaLink="true">https://brightlane.github.io/Sanebox.com/inbox-zero-guide.html</guid>
-      <pubDate>Thu, 15 May 2026 00:00:00 GMT</pubDate>
-      <description>The complete inbox zero system for 2026. Build habits that stick, use AI to automate sorting, and never feel overwhelmed by email again.</description>
-      <category>Inbox Zero</category>
-      <category>Email Productivity</category>
-      <media:content url="https://brightlane.github.io/Sanebox.com/assets/sanebox-cover.jpg" medium="image" width="1200" height="630"/>
-    </item>
-
-  </channel>
-</rss>
+      - name: Commit updated feed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add feed.xml
+          git diff --cached --quiet || git commit -m "chore: update feed lastBuildDate [skip ci]"
+          git push

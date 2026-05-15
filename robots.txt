@@ -1,61 +1,23 @@
-# =========================
-# Brightlane SEO System
-# robots.txt (Production)
-# =========================
-
 User-agent: *
 Allow: /
 
-# =========================
-# BLOCK INTERNAL SYSTEM FILES
-# =========================
-
-Disallow: /node_modules/
-Disallow: /scripts/
-Disallow: /.github/
-Disallow: /cache/
-Disallow: /core/
-Disallow: /generator/
-Disallow: /generator/
-Disallow: /logs/
-Disallow: /dist-temp/
-Disallow: /.env
-Disallow: /package-lock.json
-Disallow: /package.json
-
-# =========================
-# BLOCK BUILD / ENGINE FILES
-# (prevents indexing of logic layer)
-# =========================
-
-Disallow: /keyword-*.js
-Disallow: /seo-*.js
-Disallow: /affiliate-*.js
-Disallow: /auto-*.js
-Disallow: /master-*.js
-Disallow: /engine*.js
-Disallow: /runner*.js
-Disallow: /orchestrator*.js
-Disallow: /pipeline*.js
-
-# =========================
-# ALLOW PUBLIC SEO PAGES
-# =========================
-
-Allow: /*.html
+# AI Crawlers
+User-agent: GPTBot
 Allow: /
 
-# =========================
-# BLOCK TEMP / DEBUG FILES
-# =========================
+User-agent: ChatGPT-User
+Allow: /
 
-Disallow: /*debug*
-Disallow: /*test*
-Disallow: /*tmp*
-Disallow: /*.log
+User-agent: PerplexityBot
+Allow: /
 
-# =========================
-# SITEMAP
-# =========================
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
 
 Sitemap: https://brightlane.github.io/Sanebox.com/sitemap.xml
